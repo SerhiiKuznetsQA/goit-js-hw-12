@@ -15,13 +15,15 @@ lightbox = new SimpleLightbox('.gallery a', {
 const searchForm = document.querySelector('.search-form');
 const galleryBox = document.querySelector('.js-gallery');
 const loadMoreBtn = document.querySelector('.btn_load_more');
+const infoMessDiv = document.querySelector('.info-meassage');
+
 searchForm.addEventListener('submit', handlerSearchImage);
 loadMoreBtn.addEventListener('click', handerLoadMorePhoto);
 
 let page = 1;
 let perPage = 200; //15 должно біть
 let queryValue;
-let infoMessage = `<div>We're sorry, but you've reached the end of search results.</div>`;
+let infoMessage = `<div class='info-meassage'>We're sorry, but you've reached the end of search results.</div>`;
 
 async function fetchGetImage(query) {
   const API_KEY = '44752364-afb0e3777e04db30cc3f88e82';
@@ -37,25 +39,35 @@ async function fetchGetImage(query) {
   const response = await axios.get(`https://pixabay.com/api/?${params}`);
   return response.data;
 }
+
+
+
 async function handerLoadMorePhoto() {
   page += 1;
   const data = await fetchGetImage(queryValue);
   try {
-  renderLoader();
-renderImage(data, galleryBox);
+    renderLoader();
+    renderImage(data, galleryBox);
     lightbox.refresh();
     if (galleryBox.childElementCount >= data.totalHits) {
       loadMoreBtn.classList.add('btn_load_more');
-      galleryBox.insertAdjacentHTML('beforeend', infoMessage);
-    }
+      galleryBox.insertAdjacentHTML('afterend', infoMessage);
+    } 
+   
 
     
   } catch (error) {
     onFetchError(error);
+    console.log(infoMessDiv);
+    
   } finally {
     removeLoader();
+    scroll()
   }
 }
+
+
+
 
 async function handlerSearchImage(evt) {
   evt.preventDefault();
@@ -76,7 +88,9 @@ async function handlerSearchImage(evt) {
       loadMoreBtn.classList.remove('btn_load_more');
     }
     if (data.hits.length === 0) {
-      throw new Error(onFetchError);
+      console.log(infoMessDiv);
+      throw new Error(onFetchError());
+      
     }
     renderImage(data, galleryBox);
     if (lightbox) {
@@ -89,11 +103,16 @@ async function handlerSearchImage(evt) {
         captionDelay: 250,
       });
     }
+    scroll();
+    console.log(scroll());
   } catch (error) {
     onFetchError(error);
+    console.log(infoMessDiv);
   } finally {
     searchForm.reset();
-    removeLoader()
+    removeLoader();
+
+ 
   }
 }
 
@@ -115,6 +134,8 @@ export function renderImage(data, galleryBox) {
           class="gallery-image"
           src="${webformatURL}"
           alt="${tags}"
+          width="360px"
+          heigth="200px"
         />
         <ul class="gallery-info">
           <li class='info-items'>
@@ -157,6 +178,8 @@ export function removeLoader() {
 }
 
 export function onFetchError(error) {
+  
+  loadMoreBtn.classList.add('btn_load_more');
   galleryBox.innerHTML = '';
   searchForm.reset();
   iziToast.error({
@@ -170,5 +193,16 @@ export function onFetchError(error) {
     progressBarColor: 'rgba(181, 27,27, 1)',
     message:
       'Sorry, there are no images matching your search query. Please try again!',
+  });
+}
+
+
+
+function scroll() {
+  const a = galleryBox.firstElementChild.getBoundingClientRect().height;
+  console.log(a*2);
+  return window.scrollBy({
+    top: a * 2, 
+    behavior: 'smooth'
   });
 }

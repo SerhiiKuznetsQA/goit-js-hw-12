@@ -144,7 +144,7 @@ input:active {
   display: flex;
   flex-wrap: wrap;
   padding-top: 24px;
-  justify-content: center;
+  /* justify-content: center; */
   align-items: center;
   margin: 0 auto;
   gap: 24px;
