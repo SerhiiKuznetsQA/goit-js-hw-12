@@ -68,7 +68,6 @@ export function removeLoader() {
 
 export function scroll() {
   const a = galleryBox.firstElementChild.getBoundingClientRect().height;
-  console.log(a * 2);
   return window.scrollBy({
     top: a * 2,
     behavior: 'smooth',

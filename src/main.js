@@ -23,7 +23,7 @@ const loadMoreBtn = document.querySelector('.btn_load_more');
 searchForm.addEventListener('submit', handlerSearchImage);
 
 let page = 1;
-let perPage = 20;
+let perPage = 15;
 let queryValue;
 const hiddenClass = 'is-hidden';
 let infoMessage = `<div class='info-meassage'>We're sorry, but you've reached the end of search results.</div>`;
@@ -40,7 +40,7 @@ export async function handerLoadMorePhoto() {
   try {
     renderImage(data, galleryBox);
     lightbox.refresh();
-    if (galleryBox.childElementCount >= data.totalHits) {
+    if (galleryBox.childElementCount <= data.totalHits) {
       hide(loadMoreBtn)
       galleryBox.insertAdjacentHTML('afterend', infoMessage);
     }
@@ -66,6 +66,10 @@ async function handlerSearchImage(evt) {
     page = 1;
     const data = await fetchGetImage(queryValue);
     const totalData = Math.ceil(data.totalHits / perPage);
+    if (galleryBox.childElementCount >= perPage) { 
+      console.log(data.totalHits);
+      console.log("teset");
+    }
     if (totalData > page) {
       show(loadMoreBtn);
       loadMoreBtn.addEventListener('click', handerLoadMorePhoto);
@@ -92,7 +96,6 @@ async function handlerSearchImage(evt) {
     onFetchError(error);
   } finally {
     searchForm.reset();
-
     removeLoader();
   }
 }
