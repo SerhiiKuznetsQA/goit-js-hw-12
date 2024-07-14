@@ -66,10 +66,6 @@ async function handlerSearchImage(evt) {
     page = 1;
     const data = await fetchGetImage(queryValue);
     const totalData = Math.ceil(data.totalHits / perPage);
-    if (galleryBox.childElementCount >= perPage) { 
-      console.log(data.totalHits);
-      console.log("teset");
-    }
     if (totalData > page) {
       show(loadMoreBtn);
       loadMoreBtn.addEventListener('click', handerLoadMorePhoto);
