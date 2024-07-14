@@ -23,7 +23,7 @@ const loadMoreBtn = document.querySelector('.btn_load_more');
 searchForm.addEventListener('submit', handlerSearchImage);
 
 let page = 1;
-let perPage = 200; //15 должно біть
+let perPage = 20;
 let queryValue;
 const hiddenClass = 'is-hidden';
 let infoMessage = `<div class='info-meassage'>We're sorry, but you've reached the end of search results.</div>`;
@@ -70,6 +70,8 @@ async function handlerSearchImage(evt) {
       show(loadMoreBtn);
       loadMoreBtn.addEventListener('click', handerLoadMorePhoto);
     }
+ 
+      // }-----остановился вот тут
     if (data.hits.length === 0) {
       throw new Error(onFetchError());
     }
@@ -90,6 +92,7 @@ async function handlerSearchImage(evt) {
     onFetchError(error);
   } finally {
     searchForm.reset();
+
     removeLoader();
   }
 }

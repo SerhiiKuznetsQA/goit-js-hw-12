@@ -75,7 +75,7 @@ export function scroll() {
   });
 }
 
-// hide(loadMoreBtn)
+
 export function hide(loadMoreBtn) {
   loadMoreBtn.classList.add(hiddenClass);
 }

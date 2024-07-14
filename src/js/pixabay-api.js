@@ -7,7 +7,6 @@ import {
   loadMoreBtn,
   page,
   perPage,
-  infoMessage,
 } from '../main';
 import { hide } from './render-functions';
 
@@ -33,11 +32,9 @@ export function onFetchError(error) {
     infoMessDiv.remove();
   }
   hide(loadMoreBtn);
-  // loadMoreBtn.classList.add('btn_load_more');
   galleryBox.innerHTML = '';
   searchForm.reset();
   iziToast.error({
-    //   messageColor: 'white',
     theme: 'dark',
     maxWidth: '432px',
     position: 'topRight',
