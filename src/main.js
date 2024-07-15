@@ -8,6 +8,7 @@ import { renderLoader } from './js/render-functions';
 import { removeLoader } from './js/render-functions';
 import { onFetchError } from './js/pixabay-api';
 import { scroll } from './js/render-functions';
+import { removeInfoMeassage } from './js/pixabay-api';
 
 let lightbox;
 lightbox = new SimpleLightbox('.gallery a', {
@@ -29,21 +30,22 @@ const hiddenClass = 'is-hidden';
 let infoMessage = `<div class='info-meassage'>We're sorry, but you've reached the end of search results.</div>`;
 hide(loadMoreBtn);
 
-
-
-
-
 export async function handerLoadMorePhoto() {
   page += 1;
   const data = await fetchGetImage(queryValue);
+  const totalData = Math.ceil(data.totalHits / perPage);
+  console.log(totalData);
   renderLoader();
   try {
     renderImage(data, galleryBox);
     lightbox.refresh();
-    if (galleryBox.childElementCount <= data.totalHits) {
-      hide(loadMoreBtn)
-      galleryBox.insertAdjacentHTML('afterend', infoMessage);
+    if (page === totalData) {
+        hide(loadMoreBtn);
+        galleryBox.insertAdjacentHTML('afterend', infoMessage);
     }
+    console.log(page,totalData);
+
+   
   } catch (error) {
     onFetchError(error);
   } finally {
@@ -54,24 +56,28 @@ export async function handerLoadMorePhoto() {
 
 async function handlerSearchImage(evt) {
   evt.preventDefault();
+ 
   if (evt.currentTarget.elements.search.value.trim() === '') {
     return onFetchError();
   } else if (galleryBox.hasChildNodes) {
     galleryBox.innerHTML = '';
   }
+  // console.log(galleryBox.childNodes);
+  if (galleryBox.nextElementSibling.classList.contains('info-meassage')) {
+    removeInfoMeassage();
+  }
   const form = evt.currentTarget;
   queryValue = form.elements.search.value.toLowerCase().trim();
+  page = 1;
   try {
     renderLoader();
-    page = 1;
+
     const data = await fetchGetImage(queryValue);
-    const totalData = Math.ceil(data.totalHits / perPage);
-    if (totalData > page) {
+    if (data.hits.length > 0 && data.hits.length !== data.totalHits) {
       show(loadMoreBtn);
       loadMoreBtn.addEventListener('click', handerLoadMorePhoto);
     }
- 
-      // }-----остановился вот тут
+
     if (data.hits.length === 0) {
       throw new Error(onFetchError());
     }
@@ -87,7 +93,6 @@ async function handlerSearchImage(evt) {
       });
     }
     scroll();
-    console.log(scroll());
   } catch (error) {
     onFetchError(error);
   } finally {
@@ -95,9 +100,6 @@ async function handlerSearchImage(evt) {
     removeLoader();
   }
 }
-
-
- 
 
 export {
   galleryBox,

@@ -27,10 +27,7 @@ export async function fetchGetImage(query) {
     return response.data;
 }
 export function onFetchError(error) {
-  const infoMessDiv = document.querySelector('.info-meassage');
-  if (infoMessDiv) {
-    infoMessDiv.remove();
-  }
+removeInfoMeassage();
   hide(loadMoreBtn);
   galleryBox.innerHTML = '';
   searchForm.reset();
@@ -45,4 +42,12 @@ export function onFetchError(error) {
     message:
       'Sorry, there are no images matching your search query. Please try again!',
   });
+}
+
+
+export function removeInfoMeassage() { 
+    const infoMessDiv = document.querySelector('.info-meassage');
+    if (infoMessDiv) {
+      infoMessDiv.remove();
+    }
 }
